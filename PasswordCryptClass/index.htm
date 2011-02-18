@@ -1,0 +1,195 @@
+<!DOCTYPE html> 
+<html lang="pt-br"> 
+	<head> 
+
+		<title>Password Crypt Class - Install and Example</title>
+		<meta charset="utf-8"> 
+    <style>
+      /* Body */
+      body {
+        color:#000;
+        background-color:#FFF;
+        font-size: 10pt;
+        font-family: Tahoma,'Trebuchet MS', Trebuchet, 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        line-height: 1.429;
+        margin: 0;
+        padding: 0;
+        text-align: left;
+      }
+
+      /* Headings */
+      h2 {font-size: 2em;}
+      h3 {font-size: 20px;}
+      h4 {font-size: 18px;}
+      h5 {font-size: 1.190em;}
+      h6 {font-size: 14px;}
+
+      h2, h3, h4, h5, h6 {
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: .8em;
+        color:white;
+      }
+
+      h4, h5, h6 {
+         color:#c4c4c4;
+      }	
+      /* Anchors */
+      a {outline: 0;}
+      a img {border: 0px; text-decoration: none;}
+      a:link, a:visited {
+        color: #C74350;
+        padding: 0 1px;
+        text-decoration: underline;
+      }
+      a:hover, a:active {
+        background-color: #C74350;
+        color: #fff;
+        text-decoration: none;
+        text-shadow: 1px 1px 1px #333;
+      }
+
+      /* Paragraphs */
+      p {margin-bottom: 15px;}
+      * p:last-child {margin-bottom: 0;}
+
+      strong, b {font-weight: bold;}
+      em, i {font-style: italic;}
+
+
+      pre {
+       white-space: pre-wrap;
+       white-space: -moz-pre-wrap;
+       white-space: -o-pre-wrap;
+       background: #D4D4D4;
+       padding:5px;
+       font-size:9pt;
+      } code {
+       display: block;
+       padding: 0.5em 1em;
+       border: 1px solid #333
+      }
+
+      #container { width:600px; padding:15px; text-align:left; }
+    </style>
+	</head>
+
+<body>
+<a href="http://github.com/lslucas"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://assets2.github.com/img/c641758e06304bc53ae7f633269018169e7e5851?repo=&url=http%3A%2F%2Fs3.amazonaws.com%2Fgithub%2Fribbons%2Fforkme_left_white_ffffff.png&path=" alt="Fork me on GitHub"></a>
+
+<center>
+<div id='container'>
+  <h1>Password Crypt Class</h1>
+  Just copy <b>class.password.php</b> to your folder and include or require it on your code.
+  <br/>You do not need <b>mcrypt</b> this class checks if you have support it will not be using md5.
+
+  <h4>Samples</h4>
+
+  <b>Sample 1</b> Simple use, <a href='demo-sample1.php' target='_blank'>see running</a>
+  <code>
+   <pre>
+&lt;?php
+
+  require_once 'class.password.php';
+
+   #call the classs
+   $pass = new Password;
+
+      #password defined by user
+      $password = 'your password';
+
+      #record crypt pass in var
+      $pass_crypt = $pass->hash($password);
+
+      print "The string &lt;b>{$password}&lt;/b> now is &lt;b>{$pass_crypt}&lt;/b>";
+      print "&lt;br/>Using ".$pass->used;
+
+
+      /*
+       *Change the salt
+       */
+
+      #record crypt pass in var
+      $pass_crypt = $pass->hash($password, 'mcrypt', 'new salt');
+
+      print "&lt;p>";
+      print "Changed the salt. The string &lt;b>{$password}&lt;/b> now is &lt;b>{$pass_crypt}&lt;/b>";
+      print "&lt;br/>Using ".$pass->used;
+      print "&lt;/p>";
+
+      /*
+       *Using md5
+       */
+
+      #record crypt pass in var
+      $pass_crypt = $pass->hash($password, 'md5');
+
+      print "&lt;p>";
+      print "The string &lt;b>{$password}&lt;/b> now is &lt;b>{$pass_crypt}&lt;/b>";
+      print "&lt;br/>Using ".$pass->used;
+      print "&lt;/p>";
+
+    </pre>
+   </code>
+
+
+  <br/><b>Sample 2</b> Simple use inside a class
+  <code>
+   <pre>
+   &lt;?php
+
+      require_once 'class.password.php';
+
+        class Subscribe extends Password {
+
+        private $pass, $email;
+        /**** your code and functions ***/
+
+          public function setPassword() {
+
+            #variable for connection with database
+            global $conn;
+
+
+            #password defined by user
+            $password = $this->pass;
+
+            #call the classs
+            $pass = new Password;
+
+            #record crypt pass in var
+            $pass_crypt = utf8_encode($pass->hash($password));
+
+
+              $sql_pass = "UPDATE site_subscribers SET sub_pass=?";
+              $sql_pass.= " WHERE sub_email=?";
+
+                 if($qry_pass = $conn->prepare($sql_pass)) {
+
+                   $qry_pass->bind_param('ss', $pass_crypt, $this->email);
+                   $qry_pass->execute();
+                   $qry_pass->store_result();
+                   $qry_pass->close();
+
+
+                  return true;
+
+                } else return false;
+
+          }
+
+
+       }
+    </pre>
+   </code>
+   </p>
+
+   <h3>Enjoy</h3>
+
+   <p>By Lucas Serafim, lslucas@gmail.com<br/><a href='www.lucasserafim.com.br' target='_blank'>www.lucasserafim.com.br</a></p>
+
+</div>
+</center>
+
+</body>
+</html>
